@@ -11,8 +11,8 @@ library(viridis)
 library(dplyr)
 
 # carregar as tabelas csv
-funcao_molecular_ESEC_2<- read.csv("C:/Users/joand/Documents/ShinyGO/ESEC_2_GO_MolecularFunction.csv", header = TRUE, sep = ",")
-processos_biologicos_ESEC_2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ESEC_2_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+funcao_molecular_ESEC_2<- read.csv("diretório", header = TRUE, sep = ",")
+processos_biologicos_ESEC_2 <- read.csv("diretório", header = TRUE, sep = ",")
 
 
 # filtrar e selecionar os dados
@@ -69,9 +69,9 @@ library(viridis)
 library(dplyr)
 
 # carregar as tabelas csv
-vias_sinalizacao_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_KEGG.csv", header = TRUE, sep = ";")
-funcao_molecular_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_GO_MolecularFunction.csv", header = TRUE, sep = ",")
-processos_biologicos_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+vias_sinalizacao_ECC1 <- read.csv("diretório", header = TRUE, sep = ";")
+funcao_molecular_ECC1 <- read.csv("diretório", header = TRUE, sep = ",")
+processos_biologicos_ECC1 <- read.csv("diretório", header = TRUE, sep = ",")
 
 
 # filtrar e selecionar os dados
@@ -130,8 +130,8 @@ ggplot(data_ECC1, aes(x = Fold.Enrichment, y = Pathway, size = nGenes, fill = En
 ```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
 
 # carregar as tabelas csv
-funcao_molecular_ECC2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_2_GO_MolecularFunction.csv", header = TRUE, sep = ";")
-processos_biologicos_ECC2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_2_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+funcao_molecular_ECC2 <- read.csv("diretório", header = TRUE, sep = ";")
+processos_biologicos_ECC2 <- read.csv("diretório", header = TRUE, sep = ",")
 
 
 funcao_molecular_ECC2 <- funcao_molecular_ECC2[funcao_molecular_ECC2$Enrichment.FDR < 0.05,]
