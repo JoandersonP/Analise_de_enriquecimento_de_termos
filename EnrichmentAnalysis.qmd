@@ -1,0 +1,181 @@
+---
+title: Gráfico de bolhas - Análise de enriquecimento de termos
+format: html
+editor: visual
+---
+
+```{r fig.height=7, fig.width=9, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(scales)
+library(viridis)
+library(dplyr)
+
+# carregar as tabelas csv
+funcao_molecular_ESEC_2<- read.csv("C:/Users/joand/Documents/ShinyGO/ESEC_2_GO_MolecularFunction.csv", header = TRUE, sep = ",")
+processos_biologicos_ESEC_2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ESEC_2_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+
+
+# filtrar e selecionar os dados
+
+
+funcao_molecular_ESEC_2 <- funcao_molecular_ESEC_2[funcao_molecular_ESEC_2$Enrichment.FDR < 0.05,]
+funcao_molecular_ESEC_2 <- funcao_molecular_ESEC_2[order(-funcao_molecular_ESEC_2$nGenes),][1:9,]
+
+processos_biologicos_ESEC_2 <- processos_biologicos_ESEC_2[processos_biologicos_ESEC_2$Enrichment.FDR < 0.05,]
+processos_biologicos_ESEC_2 <- processos_biologicos_ESEC_2[order(-processos_biologicos_ESEC_2$nGenes),][1:12,]
+
+
+# criar o dataframe unificado com os dados filtrados
+data_ESEC_2 <- rbind(
+  transform(funcao_molecular_ESEC_2, category = "GO - Molecular Function"),
+  transform(processos_biologicos_ESEC_2, category = "GO - Biological Process"))
+
+# ordenar as categorias
+data_ESEC_2$Pathway <- factor(data_ESEC_2$Pathway, levels = c(as.character(funcao_molecular_ESEC_2$Pathway),
+                                                as.character(processos_biologicos_ESEC_2$Pathway)))
+
+# definir as escalas
+size_scale <- scale_size(range = c(3, 10))
+color_scale <- scale_color_viridis(option = "C", direction = -1)
+fill_scale <- scale_fill_viridis(option = "C", direction = -1)
+
+# criar o gráfico de bolhas
+data_ESEC_2$Fold.Enrichment <- as.numeric(data_ESEC_2$Fold.Enrichment)
+
+ggplot(data_ESEC_2, aes(x = Fold.Enrichment, y = Pathway, size = nGenes, fill = Enrichment.FDR)) + 
+  geom_point(alpha = 0.8, shape = 21) +
+  scale_size(range = c(2,10), breaks = c(15, 25, 50, 100),
+             guide = guide_legend(override.aes = list(shape = 1, alpha = 0.8, fill = "white"),
+                                  title = "nGenes")) +
+  scale_fill_viridis_c(option = "C", name = "Enrichment FDR") +
+  labs(title = "Enrichment Analysis - ESEC_2", x = "Fold Enrichment", y = "Pathways", size = "nGenes") +
+  facet_wrap(~ category, ncol =1, scales = "free_y", strip.position = "right") +
+  theme_bw() +
+  theme(text = element_text(family = "Arial", size = 12), 
+        axis.text.y = element_text(color = "black"), 
+        axis.text.x = element_text(color = "black"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10)) +
+  scale_x_continuous(limits = c(1.2, 2.3), expand = c(0,0), 
+                     oob = rescale_none, 
+                     name = "Fold Enrichment", 
+                     breaks = scales::extended_breaks(10))
+```
+
+```{r fig.height=7, fig.width=9, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(scales)
+library(viridis)
+library(dplyr)
+
+# carregar as tabelas csv
+vias_sinalizacao_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_KEGG.csv", header = TRUE, sep = ";")
+funcao_molecular_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_GO_MolecularFunction.csv", header = TRUE, sep = ",")
+processos_biologicos_ECC1 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_1_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+
+
+# filtrar e selecionar os dados
+
+vias_sinalizacao_ECC1 <- vias_sinalizacao_ECC1[vias_sinalizacao_ECC1$Enrichment.FDR < 0.05,]
+vias_sinalizacao_ECC1 <- vias_sinalizacao_ECC1[order(-vias_sinalizacao_ECC1$nGenes),][1:12,]
+
+funcao_molecular_ECC1 <- funcao_molecular_ECC1[funcao_molecular_ECC1$Enrichment.FDR < 0.05,]
+funcao_molecular_ECC1 <- funcao_molecular_ECC1[order(-funcao_molecular_ECC1$nGenes),][1:12,]
+
+processos_biologicos_ECC1 <- processos_biologicos_ECC1[processos_biologicos_ECC1$Enrichment.FDR < 0.05,]
+processos_biologicos_ECC1 <- processos_biologicos_ECC1[order(-processos_biologicos_ECC1$nGenes),][1:12,]
+
+
+# criar o dataframe unificado com os dados filtrados
+data_ECC1 <- rbind(
+  transform(vias_sinalizacao_ECC1, category = "KEGG"),
+  transform(funcao_molecular_ECC1, category = "GO - Molecular Function"),
+  transform(processos_biologicos_ECC1, category = "GO - Biological Process")
+)
+
+# ordenar as categorias
+data_ECC1$Pathway <- factor(data_ECC1$Pathway, levels = c(as.character(vias_sinalizacao_ECC1$Pathway),
+                                                as.character(funcao_molecular_ECC1$Pathway),
+                                                as.character(processos_biologicos_ECC1$Pathway)))
+
+# definir as escalas
+size_scale <- scale_size(range = c(3, 10))
+color_scale <- scale_color_viridis(option = "C", direction = -1)
+fill_scale <- scale_fill_viridis(option = "C", direction = -1)
+
+# criar o gráfico de bolhas
+data_ECC1$Fold.Enrichment <- as.numeric(data_ECC1$Fold.Enrichment)
+
+ggplot(data_ECC1, aes(x = Fold.Enrichment, y = Pathway, size = nGenes, fill = Enrichment.FDR)) + 
+  geom_point(alpha = 0.8, shape = 21) +
+  scale_size(range = c(2,10), breaks = c(25, 150, 300, 600),
+             guide = guide_legend(override.aes = list(shape = 1, alpha = 0.8, fill = "white"),
+                                  title = "nGenes")) +
+  scale_fill_viridis_c(option = "C", name = "Enrichment FDR") +
+  labs(title = "Enrichment Analysis - ECC1", x = "Fold Enrichment", y = "Pathways", size = "nGenes") +
+  facet_wrap(~ category, ncol =1, scales = "free_y", strip.position = "right") +
+  theme_bw() +
+  theme(text = element_text(family = "Arial", size = 12), 
+        axis.text.y = element_text(color = "black"), 
+        axis.text.x = element_text(color = "black"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10)) +
+  scale_x_continuous(limits = c(1.0, 1.8), expand = c(0,0), 
+                     oob = rescale_none, 
+                     name = "Fold Enrichment", 
+                     breaks = scales::extended_breaks(10))
+```
+
+
+```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
+
+# carregar as tabelas csv
+funcao_molecular_ECC2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_2_GO_MolecularFunction.csv", header = TRUE, sep = ";")
+processos_biologicos_ECC2 <- read.csv("C:/Users/joand/Documents/ShinyGO/ECC_2_GO_BiologicalProcess.csv", header = TRUE, sep = ",")
+
+
+funcao_molecular_ECC2 <- funcao_molecular_ECC2[funcao_molecular_ECC2$Enrichment.FDR < 0.05,]
+funcao_molecular_ECC2 <- funcao_molecular_ECC2[order(-funcao_molecular_ECC2$nGenes),][1:6,]
+
+processos_biologicos_ECC2 <- processos_biologicos_ECC2[processos_biologicos_ECC2$Enrichment.FDR < 0.05,]
+processos_biologicos_ECC2 <- processos_biologicos_ECC2[order(-processos_biologicos_ECC2$nGenes),][1:12,]
+
+
+# criar o dataframe unificado com os dados filtrados
+data_ECC2 <- rbind(
+
+  transform(funcao_molecular_ECC2, category = "GO - Molecular Function"),
+  transform(processos_biologicos_ECC2, category = "GO - Biological Process")
+)
+
+# ordenar as categorias
+data_ECC2$Pathway <- factor(data_ECC2$Pathway, levels = c (as.character(funcao_molecular_ECC2$Pathway),
+                                                as.character(processos_biologicos_ECC2$Pathway)))
+
+# definir as escalas
+size_scale <- scale_size(range = c(3, 10))
+color_scale <- scale_color_viridis(option = "C", direction = -1)
+fill_scale <- scale_fill_viridis(option = "C", direction = -1)
+
+# criar o gráfico de bolhas
+data_ECC2$Fold.Enrichment <- as.numeric(data_ECC2$Fold.Enrichment)
+
+ggplot(data_ECC2, aes(x = Fold.Enrichment, y = Pathway, size = nGenes, fill = Enrichment.FDR)) + 
+  geom_point(alpha = 0.8, shape = 21) +
+  scale_size(range = c(2,10), breaks = c(25, 50, 150, 300, 500),
+             guide = guide_legend(override.aes = list(shape = 1, alpha = 0.8, fill = "white"),
+                                  title = "nGenes")) +
+  scale_fill_viridis_c(option = "C", name = "Enrichment FDR") +
+  labs(title = "Enrichment Analysis - ECC2", x = "Fold Enrichment", y = "Pathways", size = "nGenes") +
+  facet_wrap(~ category, ncol =1, scales = "free_y", strip.position = "right") +
+  theme_bw() +
+  theme(text = element_text(family = "Arial", size = 12), 
+        axis.text.y = element_text(color = "black"), 
+        axis.text.x = element_text(color = "black"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10)) +
+  scale_x_continuous(limits = c(1.0, 2.1), expand = c(0,0), 
+                     oob = rescale_none, 
+                     name = "Fold Enrichment", 
+                     breaks = scales::extended_breaks(10))
+```
